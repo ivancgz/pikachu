@@ -134,59 +134,70 @@ var _css = _interopRequireDefault(require("./css.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var n = 1;
-demo.innerText = _css.default.substr(0, n);
-demo2.innerHTML = _css.default.substr(0, n);
-var time = 100;
+var player = {
+  id: undefined,
+  n: 1,
+  ui: {
+    demo: document.querySelector('#demo'),
+    demo2: document.querySelector('#demo2')
+  },
+  time: 100,
+  events: {
+    '#btnPause': 'pause',
+    '#btnPlay': 'play',
+    '#btnSlow': 'slow',
+    '#btnNormal': 'normal',
+    '#btnFast': 'fast'
+  },
+  init: function init() {
+    player.ui.demo.innerText = _css.default.substr(0, player.n);
+    player.ui.demo2.innerHTML = _css.default.substr(0, player.n);
+    player.play();
+    player.bindEvents();
+  },
+  bindEvents: function bindEvents() {
+    for (var key in player.events) {
+      if (player.events.hasOwnProperty(key)) {
+        var value = player.events[key];
+        document.querySelector(key).onclick = player[value];
+      }
+    }
+  },
+  run: function run() {
+    player.n += 1;
 
-var run = function run() {
-  n += 1;
+    if (player.n > _css.default.length) {
+      window.clearInterval(player.id);
+      return;
+    }
 
-  if (n > _css.default.length) {
-    window.clearInterval(id);
-    return;
+    player.ui.demo.innerText = _css.default.substr(0, player.n);
+    player.ui.demo2.innerHTML = _css.default.substr(0, player.n);
+    player.ui.demo.scrollTop = player.ui.demo.scrollHeight;
+  },
+  play: function play() {
+    player.id = setInterval(player.run, player.time);
+  },
+  pause: function pause() {
+    window.clearInterval(player.id);
+  },
+  fast: function fast() {
+    player.pause();
+    player.time = 0;
+    player.play();
+  },
+  slow: function slow() {
+    player.pause();
+    player.time = 300;
+    player.play();
+  },
+  normal: function normal() {
+    player.pause();
+    player.time = 100;
+    player.play();
   }
-
-  demo.innerText = _css.default.substr(0, n);
-  demo2.innerHTML = _css.default.substr(0, n);
-  demo.scrollTop = demo.scrollHeight;
 };
-
-var play = function play() {
-  return setInterval(run, time);
-};
-
-var pause = function pause() {
-  window.clearInterval(id);
-};
-
-var id = play();
-
-btnPause.onclick = function () {
-  pause();
-};
-
-btnPlay.onclick = function () {
-  id = play();
-};
-
-btnSlow.onclick = function () {
-  pause();
-  time = 300;
-  id = play();
-};
-
-btnNormal.onclick = function () {
-  pause();
-  time = 100;
-  id = play();
-};
-
-btnFast.onclick = function () {
-  pause();
-  time = 0;
-  id = play();
-};
+player.init();
 },{"./css.js":"css.js"}],"D:/program file/nodejs/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
